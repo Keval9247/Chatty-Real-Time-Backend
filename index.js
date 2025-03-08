@@ -16,7 +16,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(
   cors({
-    origin: true,
+    origin: "http://localhost:5173", // Update to your frontend URL in production
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   })
