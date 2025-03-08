@@ -24,27 +24,29 @@ const allowedOrigins = [
 
 const corsOptions = {
   origin: (origin, callback) => {
-    // Allow requests with no origin (e.g., Postman) or if origin is in allowed list
+    const allowedOrigins = [
+      "http://localhost:5173", // Development frontend
+      // Add your production frontend URL here
+    ];
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      console.log(`CORS blocked origin: ${origin}`); // Debug log
       callback(new Error("Not allowed by CORS"));
     }
   },
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"], // Explicitly allow Authorization
-  credentials: true, // Allow cookies/credentials
-  optionsSuccessStatus: 200, // Ensure preflight returns 200
+  allowedHeaders: ["Content-Type", "Authorization", "Accept"],
+  credentials: true,
 };
 
-// Apply CORS middleware
 app.use(cors(corsOptions));
-
-// Explicitly handle preflight OPTIONS requests
 app.options("*", cors(corsOptions));
 
-// Routes
+app.use((req, res, next) => {
+  console.log("Request Origin:", req.headers.origin);
+  next();
+});
+
 app.use("/api", Route);
 
 app.get("/test", (req, res) => {

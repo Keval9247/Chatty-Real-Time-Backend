@@ -8,19 +8,17 @@ const io = new Server(server, {
     cors: {
         origin: (origin, callback) => {
             const allowedOrigins = [
-                "http://localhost:5173",
-                process.env.APP_LOCAL_URL || "http://localhost:5173",
-                // Add production frontend URL here
+                "http://localhost:5173", // Development frontend
+                // Add your production frontend URL here
             ];
             if (!origin || allowedOrigins.includes(origin)) {
                 callback(null, true);
             } else {
-                console.log(`Socket.io CORS blocked origin: ${origin}`); // Debug log
                 callback(new Error("Not allowed by CORS"));
             }
         },
         methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-        allowedHeaders: ["Content-Type", "Authorization"],
+        allowedHeaders: ["Content-Type", "Authorization", "Accept"],
         credentials: true,
     },
 });
