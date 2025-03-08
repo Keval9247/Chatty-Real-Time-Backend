@@ -63,7 +63,7 @@ connectDB()
   });
 
 const PORT = process.env.PORT || 3000; // Render.com will override this
-server.listen(PORT, () => {
+app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 }).on("error", (err) => {
   if (err.code === "EADDRINUSE") {
