@@ -15,7 +15,7 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
 const corsOptions = {
-  origin: "http://localhost:5173", // Update to your frontend URL in production
+  origin: true, // Update to your frontend URL in production
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Include all methods you need
   allowedHeaders: ["Content-Type", "Authorization"], // Match frontend headers
   credentials: true, // Allow cookies/credentials
