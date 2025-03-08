@@ -14,17 +14,22 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
-app.use(
-  cors({
-    origin: "http://localhost:5173", // Update to your frontend URL in production
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
-  })
-);
+const corsOptions = {
+  origin: "http://localhost:5173", // Update to your frontend URL in production
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Include all methods you need
+  allowedHeaders: ["Content-Type", "Authorization"], // Match frontend headers
+  credentials: true, // Allow cookies/credentials
+};
+
+// Apply CORS middleware
+app.use(cors(corsOptions));
+
+// Explicitly handle preflight OPTIONS requests
+app.options("*", cors(corsOptions));
 
 app.use("/api", Route);
 
-app.get("/", (req, res) => {
+app.get("/test", (req, res) => {
   res.send("API is working...");
 });
 
