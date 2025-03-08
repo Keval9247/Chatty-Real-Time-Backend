@@ -14,10 +14,23 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
+// Define allowed origins
+const allowedOrigins = [
+  "http://localhost:5173", // Development frontend
+  // Add your production frontend URL here, e.g., "https://your-frontend-domain.com"
+];
+
 const corsOptions = {
-  origin: true, // Update to your frontend URL in production
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Include all methods you need
-  allowedHeaders: ["Content-Type", "Authorization"], // Match frontend headers
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps or curl) or if origin is in allowed list
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true, // Allow cookies/credentials
 };
 
