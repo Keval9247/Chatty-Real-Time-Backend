@@ -23,6 +23,10 @@ app.use(
 );
 
 app.use('/api', Route)
+app.get("/test", (req, res) => {
+  res.send("Api is working...");
+}
+);
 
 connectDB()
   .then(() => {
