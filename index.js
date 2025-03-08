@@ -62,10 +62,16 @@ connectDB()
     console.error("Error connecting to MongoDB:", err.message);
   });
 
-// Start server (for local testing, Render.com will override this)
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+const PORT = process.env.PORT || 3000; // Render.com will override this
+server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+}).on("error", (err) => {
+  if (err.code === "EADDRINUSE") {
+    console.error(`Port ${PORT} is already in use. Please free the port or use a different one.`);
+  } else {
+    console.error("Server error:", err);
+  }
+  process.exit(1); // Exit with failure
 });
 
 module.exports = app;
