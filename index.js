@@ -1,19 +1,19 @@
 const express = require("express");
-const { app, server } = require("./middleware/socket");
 const cors = require("cors");
-const bodyParser = require('body-parser');
+const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
+require("dotenv").config();
+
 const connectDB = require("./db");
 const Route = require("./routes/Routes");
-const cookieParser = require('cookie-parser');
-require('dotenv').config()
+
+const app = express();
 
 app.use(express.json());
-app.use(bodyParser.json())
-
+app.use(bodyParser.json());
 app.use(cookieParser());
-app.use(express.urlencoded({ extended: true }))
-app.use("/uploads", express.static("uploads"));
-app.use(express.static("build"));
+app.use(express.urlencoded({ extended: true }));
+
 app.use(
   cors({
     origin: true,
@@ -22,20 +22,18 @@ app.use(
   })
 );
 
-app.use('/api', Route)
-app.get("/test", (req, res) => {
-  res.send("Api is working...");
-}
-);
+app.use("/api", Route);
+
+app.get("/", (req, res) => {
+  res.send("API is working...");
+});
 
 connectDB()
   .then(() => {
-    server.listen(4000, () => {
-      console.log("Server running on port 4000");
-    });
+    console.log("Connected to MongoDB");
   })
   .catch((err) => {
     console.error("Error connecting to MongoDB:", err.message);
-    process.exit(1);
   });
 
+module.exports = app;
