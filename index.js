@@ -7,22 +7,21 @@ require("dotenv").config();
 
 const connectDB = require("./db");
 const Route = require("./routes/Routes");
-const { initializeSocket } = require("./middleware/socket"); // Import socket initialization
+const { initializeSocket } = require("./middleware/socket");
 
 const app = express();
-const server = http.createServer(app); // Create a single HTTP server
+const server = http.createServer(app);
 
-// Middleware
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static('public'));
+app.use("/uploads", express.static("uploads"));
 
-// Define allowed origins
 const allowedOrigins = [
   "http://localhost:5173",
   process.env.APP_LOCAL_URL || "http://localhost:5173",
-  // Add production frontend URL here, e.g., "https://your-frontend-domain.com"
 ];
 
 const corsOptions = {
@@ -30,7 +29,7 @@ const corsOptions = {
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      console.log(`CORS blocked origin: ${origin}`);
+      console.error(`CORS blocked origin: ${origin}`);
       callback(new Error("Not allowed by CORS"));
     }
   },
@@ -43,22 +42,14 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.options("*", cors(corsOptions));
 
-app.use((req, res, next) => {
-  console.log("Request Origin:", req.headers.origin);
-  next();
-});
-
-// Routes
 app.use("/api", Route);
 
 app.get("/test", (req, res) => {
   res.send("API is working...");
 });
 
-// Initialize Socket.io with the server
 initializeSocket(server);
 
-// Database connection
 connectDB()
   .then(() => {
     console.log("Connected to MongoDB");
@@ -67,8 +58,7 @@ connectDB()
     console.error("Error connecting to MongoDB:", err.message);
   });
 
-// Start the server
-const PORT = process.env.PORT || 3000; // Render.com will override this
+const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 }).on("error", (err) => {

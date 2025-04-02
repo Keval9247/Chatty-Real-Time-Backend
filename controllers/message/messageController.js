@@ -29,7 +29,7 @@ const messageController = () => {
                 res.status(200).json({ messages: "Side-User Retrieved Successfully.", count: filterdUser.length, users: filterdUser });
 
             } catch (error) {
-                console.log(error);
+                console.error(error);
                 res.status(500).json({ message: "Server error." })
 
             }
@@ -46,7 +46,7 @@ const messageController = () => {
                 })
                 res.status(200).json({ message: "Message Retrived Successfully.", messagesList: messages });
             } catch (error) {
-                console.log(error);
+                console.error(error);
                 res.status(500).json({ message: 'Server error' });
             }
         },
@@ -69,7 +69,6 @@ const messageController = () => {
                 const receiverSocketId = await getReceiverSocketId(receiverId)
                 if (receiverSocketId) {
                     io.to(receiverSocketId).emit('newMessage', newMessage);
-                    console.log(`Message sent to socket ${receiverSocketId}`);
                 } else {
                     console.log(`Receiver ${receiverId} is not online.`);
                 }
@@ -79,7 +78,7 @@ const messageController = () => {
                     message: newMessage
                 });
             } catch (error) {
-                console.log(error);
+                console.error(error);
                 res.status(500).json({ message: 'Server error' });
             }
         }

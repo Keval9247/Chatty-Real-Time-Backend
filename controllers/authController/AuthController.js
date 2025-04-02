@@ -45,7 +45,7 @@ const authController = () => {
                 });
 
             } catch (error) {
-                console.log(error);
+                console.error(error);
                 res.status(500).json({ message: 'Server error' });
             }
         },
@@ -79,7 +79,7 @@ const authController = () => {
                     },
                 });
             } catch (error) {
-                console.log(error);
+                console.error(error);
                 res.status(500).json({ message: 'Server error' });
 
             }
@@ -89,7 +89,7 @@ const authController = () => {
                 res.clearCookie("Bearer");
                 res.status(200).json({ message: 'User logged out successfully' });
             } catch (error) {
-                console.log(error);
+                console.error(error);
                 res.status(500).json({ message: 'Server error' });
             }
         },
@@ -117,6 +117,7 @@ const authController = () => {
                         username: user.username,
                         email: user.email,
                         profilePic: user.profilePic,
+                        createdAt: user.createdAt
                     }
                 });
             } catch (error) {
@@ -136,7 +137,7 @@ const authController = () => {
                     res.status(401).json({ message: 'User not authenticated. Please Login again.' });
                 }
             } catch (error) {
-                console.log(error);
+                console.error(error);
                 res.status(500).json({ message: 'Server error' });
             }
         }
