@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const User = require("../../models/userSchema");
 const { generateTokenFun } = require('../../middleware/utils/Tokens');
+const path = require('path');
 
 const authController = () => {
     return {
@@ -99,11 +100,12 @@ const authController = () => {
             if (!profilePic) {
                 return res.status(400).json({ message: 'Profile picture is required.' });
             }
+            const relativePath = path.join('uploads', 'updatedImages', req.user._id.toString(), profilePic.filename);
 
             try {
                 const user = await User.findByIdAndUpdate(
                     userId,
-                    { profilePic: profilePic.path },
+                    { profilePic: relativePath },
                     { new: true }
                 );
                 if (!user) {

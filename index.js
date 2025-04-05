@@ -8,6 +8,7 @@ require("dotenv").config();
 const connectDB = require("./db");
 const Route = require("./routes/Routes");
 const { initializeSocket } = require("./middleware/socket");
+const path = require("path");
 
 const app = express();
 const server = http.createServer(app);
@@ -17,7 +18,7 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
-app.use("/uploads", express.static("uploads"));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 const allowedOrigins = [
   "http://localhost:5173",

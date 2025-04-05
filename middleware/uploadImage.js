@@ -1,19 +1,20 @@
-const multer = require('multer')
+const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
 
-
+// Delete old profile picture from the user's folder
 const deleteOldProfilePicture = (user) => {
-    const uploadsDirectory = path.join(__dirname, '..', 'uploads', 'updatedImages');
-    fs.readdir(uploadsDirectory, (err, files) => {
+    const userDirectory = path.join(__dirname, '..', 'uploads', 'updatedImages', String(user.id));
+
+    fs.readdir(userDirectory, (err, files) => {
         if (err) {
-            console.error("Error reading directory", err);
+            console.error("Error reading user directory:", err);
             return;
         }
-        // Delete the previous image if it exists
+
         files.forEach((file) => {
             if (file.includes(user.username)) {
-                const filePath = path.join(uploadsDirectory, file);
+                const filePath = path.join(userDirectory, file);
                 fs.unlink(filePath, (err) => {
                     if (err) {
                         console.error(`Error deleting file ${filePath}`, err);
@@ -26,39 +27,48 @@ const deleteOldProfilePicture = (user) => {
     });
 };
 
-
 const profileupdatestorage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'uploads/updatedImages')
+        const userDir = path.join(__dirname, '..', 'uploads', 'updatedImages', String(req.user.id));
+
+        // Ensure the directory exists
+        fs.mkdir(userDir, { recursive: true }, (err) => {
+            if (err) {
+                console.error("Error creating user folder:", err);
+                return cb(err);
+            }
+
+            cb(null, userDir);
+        });
     },
     filename: function (req, file, cb) {
         deleteOldProfilePicture(req.user);
-        cb(null, Date.now() + `-${req.user.username}-` + file.originalname)
+        const filename = Date.now() + `-${req.user.username}-` + file.originalname;
+        cb(null, filename);
     }
-})
+});
 
 const uploadImage = multer({
     storage: profileupdatestorage,
     limits: { fileSize: 1024 * 1024 * 5 },
-})
+});
 
-
+// No changes needed for chat image storage
 const chatImageStorage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'uploads/chatImages')
+        cb(null, 'uploads/chatImages');
     },
     filename: function (req, file, cb) {
-        cb(null, Date.now() + '-Chat-' + file.originalname)
+        cb(null, Date.now() + '-Chat-' + file.originalname);
     }
-})
+});
 
 const uploadImageInChat = multer({
     storage: chatImageStorage,
     limits: { fileSize: 1024 * 1024 * 5 },
-})
-
+});
 
 module.exports = {
     uploadImage,
     uploadImageInChat
-}
+};
