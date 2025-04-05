@@ -29,7 +29,7 @@ const deleteOldProfilePicture = (user) => {
 
 const profileupdatestorage = multer.diskStorage({
     destination: function (req, file, cb) {
-        const userDir = path.join(__dirname, '..', 'uploads', 'updatedImages', String(req.user.id));
+        const userDir = path.join(__dirname, '..', 'uploads', 'updatedImages', String(req.user._id));
 
         // Ensure the directory exists
         fs.mkdir(userDir, { recursive: true }, (err) => {
