@@ -17,7 +17,7 @@ app.use(express.json());
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/uploads', express.static('uploads'));
 
 const allowedOrigins = [
   "http://localhost:5173",
